@@ -1,0 +1,2044 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB",
+      "label": "InfluxDB",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "bargauge",
+      "name": "Bar gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "9.2.0-74013pre"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "$$hashKey": "object:35",
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Monitor your APC UPS statistics.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": 12285,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "New link",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "from": 1,
+                "result": {
+                  "index": 0,
+                  "text": "ONLINE"
+                },
+                "to": 100000000000000000000
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "index": 1,
+                  "text": "ON BATTERY"
+                },
+                "to": 0
+              },
+              "type": "range"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "dark-red",
+                "value": null
+              },
+              {
+                "color": "dark-green",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 0
+      },
+      "id": 14,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "expr": "apcupsd_battery_time_on_seconds",
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "metric": "apcupsd_battery_time_on_seconds",
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start:-1m)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> last()\r\n\r\n",
+          "refId": "A",
+          "step": 600
+        }
+      ],
+      "title": "UPS Status",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "dark-red",
+                "value": 20
+              },
+              {
+                "color": "semi-dark-green",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 2,
+        "y": 0
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -1m)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"battery_charge_percent\")\r\n  |> last()\r\n\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Battery charge",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 450
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 6,
+        "y": 0
+      },
+      "id": 39,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start:-1m)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n  |> last()\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Power Usage",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 450
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 9,
+        "y": 0
+      },
+      "hideTimeOverride": false,
+      "id": 46,
+      "maxDataPoints": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n  |> yield()\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "Avg",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ns"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 12,
+        "y": 0
+      },
+      "id": 40,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -1m)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"time_left_ns\")\r\n  |> last()\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Time left",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "hertz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 15,
+        "y": 0
+      },
+      "id": 45,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -1m)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"input_frequency\")\r\n  |> last()\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Frequency",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "ns"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 18,
+        "y": 0
+      },
+      "id": 41,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -1m)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"time_on_battery_ns\")\r\n  |> last()\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Time on battery",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 7000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 0
+      },
+      "id": 52,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n  |> keep(columns:cols)\r\n\r\nout = final\r\n  |> window(every: 1h)\r\n  |> mean()\r\n  |> duplicate(column: \"_stop\", as: \"_time\")\r\n  |> window(every: 24h)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * ${AvgKWprice} * 0.001}))\r\n  |> group()\r\n  |> yield()\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now/d",
+      "title": "Today's cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 120000,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 0,
+        "y": 4
+      },
+      "id": 49,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "text": {
+          "titleSize": 0
+        }
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -${Downsample_len}, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: -${Downsample_len})\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nfinal\r\n  |> window(every: 1d)\r\n  |> mean()\r\n  |> duplicate(column: \"_stop\", as: \"_time\")\r\n  |> window(every: 1mo)\r\n  |> map(fn: (r) => ({r with _value: 670.0 * r._value * 0.01 * 24.0}))\r\n  |> yield()",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-6M/M",
+      "title": "Monthly power usage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 6000,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 7000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 9,
+        "y": 4
+      },
+      "hideTimeOverride": false,
+      "id": 43,
+      "options": {
+        "displayMode": "basic",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": false,
+        "text": {
+          "titleSize": 0
+        }
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nfinal\r\n  |> window(every: 1h)\r\n  |> mean()\r\n  |> duplicate(column: \"_start\", as: \"_time\")\r\n  |> window(every: 1d)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "7d",
+      "title": "Daily power usage",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 7000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 4
+      },
+      "id": 56,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n  |> keep(columns:cols)\r\n\r\nout = final\r\n  |> window(every: 1h)\r\n  |> mean()\r\n  |> duplicate(column: \"_stop\", as: \"_time\")\r\n  |> window(every: 24h)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * ${AvgKWprice} * 0.001}))\r\n  |> group()\r\n  |> yield()\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-1d/d",
+      "title": "Yesterday's cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 120000,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 8
+      },
+      "id": 53,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -${Downsample_len}, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: -${Downsample_len})\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nout = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nout\r\n  |> window(every: 1d)\r\n  |> mean()\r\n  |> duplicate(column: \"_stop\", as: \"_time\")\r\n  |> window(every: 1mo)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * 24.0 * ${AvgKWprice} * 0.001}))\r\n  |> group()\r\n  |> yield()",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now/M",
+      "title": "This Month's cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "thresholds",
+            "seriesBy": "last"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 3,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 7200000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 300
+              },
+              {
+                "color": "red",
+                "value": 450
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(status=\\\"ONBATT\\\")/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "On Battery"
+              },
+              {
+                "id": "custom.spanNulls",
+                "value": 60000
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed",
+                  "seriesBy": "last"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/(status=\\\"ONLINE\\\")/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "On Line"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 21,
+        "x": 0,
+        "y": 10
+      },
+      "id": 35,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ndata\r\n  |> keep(columns: [\"_field\", \"_time\", \"_value\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Power usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 120000,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 12
+      },
+      "id": 51,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nout = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nout\r\n  |> mean()\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * 24.0 * 30.0}))\r\n\r\n\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "1M",
+      "title": "Monthly prediction",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 6,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 2,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 7200000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "volt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "input_voltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volts in"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "output_voltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volts out"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 21,
+        "x": 0,
+        "y": 16
+      },
+      "id": 33,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"input_voltage\" and r.status == \"ONLINE\" or r._field == \"output_voltage\" and r.status == \"ONLINE\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"input_voltage\" and r.status == \"ONLINE\" or r._field == \"output_voltage\" and r.status == \"ONLINE\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ndata\r\n  |> keep(columns: [\"_field\", \"_time\", \"_value\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Input mains",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 6000,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 7000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 16
+      },
+      "id": 50,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nout = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nout\r\n  |> mean()\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * 24.0}))\r\n",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "1d",
+      "title": "Daily prediction",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 120000,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 20
+      },
+      "id": 55,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -${Downsample_len}, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: -${Downsample_len})\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nout = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nout\r\n  |> window(every: 1d)\r\n  |> mean()\r\n  |> duplicate(column: \"_stop\", as: \"_time\")\r\n  |> window(every: 1mo)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * 24.0 * ${AvgKWprice} * 0.001}))\r\n  |> group()\r\n  |> yield()",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-1M/M",
+      "title": "Last Month's cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds",
+            "seriesBy": "last"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": 7200000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 40
+              },
+              {
+                "color": "red",
+                "value": 50
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "internal_temp"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Degrees"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 21,
+        "x": 0,
+        "y": 22
+      },
+      "id": 26,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"internal_temp\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"internal_temp\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ndata\r\n  |> keep(columns: [\"_field\", \"_time\", \"_value\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperature",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "max": 120000,
+          "min": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 21,
+        "y": 24
+      },
+      "id": 54,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.2.0-74013pre",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: -${Downsample_len}, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: -${Downsample_len})\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nout = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nout\r\n  |> window(every: 1d)\r\n  |> mean()\r\n  |> duplicate(column: \"_stop\", as: \"_time\")\r\n  |> window(every: 1mo)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01 * 24.0 * ${AvgKWprice} * 0.001}))\r\n  |> group()\r\n  |> yield()",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now-6M",
+      "title": "6 Month cost",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": -2,
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": 7200000,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "max": 30,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 24
+              },
+              {
+                "color": "green",
+                "value": 27
+              }
+            ]
+          },
+          "unit": "volt"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "battery_voltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Volts"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 2,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB}"
+          },
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\nbucket1 = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"battery_voltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\nbucket2 = from(bucket: \"${InfluxBucket_ds}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"battery_voltage\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ndata = union(tables: [bucket1, bucket2])\r\n\r\ndata\r\n  |> keep(columns: [\"_field\", \"_time\", \"_value\"])\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Battery Voltage",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5m",
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "3h",
+          "value": "3h"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "UTC",
+        "multi": false,
+        "name": "TimeZone",
+        "options": [
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "11h",
+            "value": "11h"
+          },
+          {
+            "selected": false,
+            "text": "10h",
+            "value": "10h"
+          },
+          {
+            "selected": false,
+            "text": "9h",
+            "value": "9h"
+          },
+          {
+            "selected": false,
+            "text": "8h",
+            "value": "8h"
+          },
+          {
+            "selected": false,
+            "text": "7h",
+            "value": "7h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "5h",
+            "value": "5h"
+          },
+          {
+            "selected": false,
+            "text": "4h",
+            "value": "4h"
+          },
+          {
+            "selected": true,
+            "text": "3h",
+            "value": "3h"
+          },
+          {
+            "selected": false,
+            "text": "2h",
+            "value": "2h"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "0h",
+            "value": "0h"
+          },
+          {
+            "selected": false,
+            "text": "-1h",
+            "value": "-1h"
+          },
+          {
+            "selected": false,
+            "text": "-2h",
+            "value": "-2h"
+          },
+          {
+            "selected": false,
+            "text": "-3h",
+            "value": "-3h"
+          },
+          {
+            "selected": false,
+            "text": "-4h",
+            "value": "-4h"
+          },
+          {
+            "selected": false,
+            "text": "-5h",
+            "value": "-5h"
+          },
+          {
+            "selected": false,
+            "text": "-6h",
+            "value": "-6h"
+          },
+          {
+            "selected": false,
+            "text": "-7h",
+            "value": "-7h"
+          },
+          {
+            "selected": false,
+            "text": "-8h",
+            "value": "-8h"
+          },
+          {
+            "selected": false,
+            "text": "-9h",
+            "value": "-9h"
+          },
+          {
+            "selected": false,
+            "text": "-10h",
+            "value": "-10h"
+          },
+          {
+            "selected": false,
+            "text": "-11h",
+            "value": "-11h"
+          },
+          {
+            "selected": false,
+            "text": "-12h",
+            "value": "-12h"
+          }
+        ],
+        "query": "12h, 11h, 10h, 9h, 8h, 7h, 6h, 5h, 4h, 3h, 2h, 1h, 0h, -1h, -2h, -3h, -4h, -5h, -6h, -7h, -8h, -9h, -10h, -11h, -12h",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "0.15",
+          "value": "0.15"
+        },
+        "description": "Make sure to use float value",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Average KW/h price",
+        "multi": false,
+        "name": "AvgKWprice",
+        "options": [
+          {
+            "selected": false,
+            "text": "0.10",
+            "value": "0.10"
+          },
+          {
+            "selected": false,
+            "text": "0.11",
+            "value": "0.11"
+          },
+          {
+            "selected": false,
+            "text": "0.12",
+            "value": "0.12"
+          },
+          {
+            "selected": false,
+            "text": "0.13",
+            "value": "0.13"
+          },
+          {
+            "selected": false,
+            "text": "0.14",
+            "value": "0.14"
+          },
+          {
+            "selected": true,
+            "text": "0.15",
+            "value": "0.15"
+          },
+          {
+            "selected": false,
+            "text": "0.16",
+            "value": "0.16"
+          },
+          {
+            "selected": false,
+            "text": "0.17",
+            "value": "0.17"
+          },
+          {
+            "selected": false,
+            "text": "0.18",
+            "value": "0.18"
+          },
+          {
+            "selected": false,
+            "text": "0.19",
+            "value": "0.19"
+          },
+          {
+            "selected": false,
+            "text": "0.20",
+            "value": "0.20"
+          },
+          {
+            "selected": false,
+            "text": "0.21",
+            "value": "0.21"
+          },
+          {
+            "selected": false,
+            "text": "0.22",
+            "value": "0.22"
+          },
+          {
+            "selected": false,
+            "text": "0.23",
+            "value": "0.23"
+          },
+          {
+            "selected": false,
+            "text": "0.24",
+            "value": "0.24"
+          },
+          {
+            "selected": false,
+            "text": "0.25",
+            "value": "0.25"
+          }
+        ],
+        "query": "0.10, 0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25 ",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "670.0",
+          "value": "670.0"
+        },
+        "description": "Make sure you have foat value",
+        "hide": 2,
+        "includeAll": false,
+        "label": "Power rating",
+        "multi": false,
+        "name": "UpsPower",
+        "options": [
+          {
+            "selected": true,
+            "text": "670.0",
+            "value": "670.0"
+          }
+        ],
+        "query": "670.0",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "telegraf",
+          "value": "telegraf"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "InfluxBucket",
+        "options": [
+          {
+            "selected": true,
+            "text": "telegraf",
+            "value": "telegraf"
+          }
+        ],
+        "query": "telegraf",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n  bucket: \"${InfluxBucket}\",\r\n  tag: \"ups_name\"\r\n)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Ups's name",
+        "multi": false,
+        "name": "UpsName",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n  bucket: \"${InfluxBucket}\",\r\n  tag: \"ups_name\"\r\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "telegraf_ds",
+          "value": "telegraf_ds"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "InfluxBucket_ds",
+        "options": [
+          {
+            "selected": true,
+            "text": "telegraf_ds",
+            "value": "telegraf_ds"
+          }
+        ],
+        "query": "telegraf_ds",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "1w",
+          "value": "1w"
+        },
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "Downsample_len",
+        "options": [
+          {
+            "selected": true,
+            "text": "1w",
+            "value": "1w"
+          }
+        ],
+        "query": "1w",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "5m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "APC dash pro",
+  "uid": "FBsdas",
+  "version": 71,
+  "weekStart": ""
+}
