@@ -15,7 +15,7 @@ Displays all the data available from apcupsd plugin from telegraf, after importi
 Features:
 - Dynamicly displays data from downsampled and original bucket
 - Finds all UPS's in bucket
-- Timezones, to correct for `window()` offsett
+- Timezones, to correct for `window()` offset
 - Data displayed:
   - Monthly power usage (smoothed, daily) + prediction, cost
   - Daily power usage (smoother, hourly) + prediction, cost
