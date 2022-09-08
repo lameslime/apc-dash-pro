@@ -1,6 +1,8 @@
 # apc-dash-pro
 Dashboard for grafana with InfluxDB and telegraf
 
+Link to Grafana dashboard [link](https://grafana.com/grafana/dashboards/16874-apc-ups-dashboard/) and id is `16874`.
+
 I couldn’t find a dashboard that suited my needs, so I made my own. Queries could likely be improved upon, but seem to be fine in my case.
 Displays all the data available from apcupsd plugin from telegraf, after importing check and update variables.
 
