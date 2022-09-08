@@ -22,3 +22,5 @@ Features:
   - Live power usage
   - In and Out AC voltage
   - Battery voltage and temperature
+  
+![dashboard](https://user-images.githubusercontent.com/46740316/189110231-281c23db-9336-480c-a404-2dd08abde956.png)
