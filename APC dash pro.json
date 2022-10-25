@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.2.0-74013pre"
+      "version": "9.3.0-84222pre"
     },
     {
       "type": "datasource",
@@ -161,7 +161,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -235,7 +235,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -302,7 +302,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -372,7 +372,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -432,7 +432,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -495,7 +495,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -554,7 +554,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -622,7 +622,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -686,7 +686,7 @@
           "titleSize": 0
         }
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -759,18 +759,18 @@
           "titleSize": 0
         }
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n    |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n    |> keep(columns:cols)\r\n\r\nfinal\r\n  |> window(every: 1h)\r\n  |> mean()\r\n  |> duplicate(column: \"_start\", as: \"_time\")\r\n  |> window(every: 1d)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n",
+          "query": "import \"timezone\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n     |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n     |> keep(columns:cols)\r\n\r\nfinal\r\n  |> window(every: 10m)\r\n  |> map(fn: (r) => ({r with _value: r._value / 6.0}))\r\n  |> mean()\r\n  |> duplicate(column: \"_start\", as: \"_time\")\r\n  |> window(every: 1d)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n",
           "refId": "A"
         }
       ],
-      "timeFrom": "7d",
+      "timeFrom": "6d-13h",
       "title": "Daily power usage",
       "type": "bargauge"
     },
@@ -828,7 +828,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -890,7 +890,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -1088,7 +1088,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -1287,7 +1287,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -1349,7 +1349,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-84222pre",
       "targets": [
         {
           "datasource": {
@@ -1492,8 +1492,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -1522,7 +1521,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.2.0-74013pre",
+      "pluginVersion": "9.3.0-83716pre",
       "targets": [
         {
           "datasource": {
@@ -1589,8 +1588,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red",
-                "value": null
+                "color": "red"
               },
               {
                 "color": "#EAB839",
@@ -1662,9 +1660,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "3h",
-          "value": "3h"
+          "selected": true,
+          "text": "0h",
+          "value": "0h"
         },
         "hide": 0,
         "includeAll": false,
@@ -1718,7 +1716,7 @@
             "value": "4h"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "3h",
             "value": "3h"
           },
@@ -1733,7 +1731,7 @@
             "value": "1h"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "0h",
             "value": "0h"
           },
@@ -1805,9 +1803,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "0.15",
-          "value": "0.15"
+          "selected": true,
+          "text": "0.11",
+          "value": "0.11"
         },
         "description": "Make sure to use float value",
         "hide": 0,
@@ -1822,7 +1820,7 @@
             "value": "0.10"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "0.11",
             "value": "0.11"
           },
@@ -1842,7 +1840,7 @@
             "value": "0.14"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "0.15",
             "value": "0.15"
           },
@@ -1904,30 +1902,7 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "670.0",
-          "value": "670.0"
-        },
-        "description": "Make sure you have foat value",
-        "hide": 2,
-        "includeAll": false,
-        "label": "Power rating",
-        "multi": false,
-        "name": "UpsPower",
-        "options": [
-          {
-            "selected": true,
-            "text": "670.0",
-            "value": "670.0"
-          }
-        ],
-        "query": "670.0",
-        "skipUrlSync": false,
-        "type": "custom"
-      },
-      {
-        "current": {
-          "selected": false,
+          "selected": true,
           "text": "telegraf",
           "value": "telegraf"
         },
@@ -1946,26 +1921,6 @@
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
-      },
-      {
-        "current": {},
-        "datasource": {
-          "type": "influxdb",
-          "uid": "${DS_INFLUXDB}"
-        },
-        "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n  bucket: \"${InfluxBucket}\",\r\n  tag: \"ups_name\"\r\n)",
-        "hide": 0,
-        "includeAll": false,
-        "label": "Ups's name",
-        "multi": false,
-        "name": "UpsName",
-        "options": [],
-        "query": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n  bucket: \"${InfluxBucket}\",\r\n  tag: \"ups_name\"\r\n)",
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
       },
       {
         "current": {
@@ -2008,6 +1963,55 @@
         "query": "1w",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB}"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n  bucket: \"${InfluxBucket}\",\r\n  tag: \"ups_name\"\r\n)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Ups's name",
+        "multi": false,
+        "name": "UpsName",
+        "options": [],
+        "query": "import \"influxdata/influxdb/schema\"\r\nschema.tagValues(\r\n  bucket: \"${InfluxBucket}\",\r\n  tag: \"ups_name\"\r\n)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": "840.0",
+          "value": "840.0"
+        },
+        "description": "Make sure you have foat value",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Power rating",
+        "multi": false,
+        "name": "UpsPower",
+        "options": [
+          {
+            "selected": false,
+            "text": "670.0",
+            "value": "670.0"
+          },
+          {
+            "selected": true,
+            "text": "840.0",
+            "value": "840.0"
+          }
+        ],
+        "query": "670.0, 840.0",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
       }
     ]
   },
@@ -2017,7 +2021,7 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "30s",
+      "1m",
       "5m",
       "30m",
       "1h",
@@ -2039,6 +2043,6 @@
   "timezone": "browser",
   "title": "APC dash pro",
   "uid": "FBsdas",
-  "version": 71,
+  "version": 86,
   "weekStart": ""
 }
