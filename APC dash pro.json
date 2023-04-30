@@ -21,7 +21,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.5.0-105692pre"
+      "version": "10.0.0-114140pre"
     },
     {
       "type": "datasource",
@@ -161,7 +161,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -235,7 +235,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -269,7 +269,7 @@
               },
               {
                 "color": "#EAB839",
-                "value": 300
+                "value": 350
               },
               {
                 "color": "red",
@@ -302,7 +302,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -336,7 +336,7 @@
               },
               {
                 "color": "#EAB839",
-                "value": 300
+                "value": 350
               },
               {
                 "color": "red",
@@ -372,7 +372,7 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -432,7 +432,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -495,7 +495,7 @@
         },
         "textMode": "value"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -554,7 +554,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -622,7 +622,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -655,6 +655,10 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 190000
               }
             ]
           },
@@ -687,7 +691,7 @@
         },
         "valueMode": "color"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -723,7 +727,7 @@
               },
               {
                 "color": "#EAB839",
-                "value": 7000
+                "value": 8000
               },
               {
                 "color": "red",
@@ -750,7 +754,9 @@
         "minVizWidth": 0,
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [],
+          "calcs": [
+            "sum"
+          ],
           "fields": "",
           "values": false
         },
@@ -760,14 +766,14 @@
         },
         "valueMode": "color"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "${DS_INFLUXDB}"
           },
-          "query": "import \"timezone\"\r\nimport \"date\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> filter(fn: (r) => r._time >= date.sub(from: date.truncate(t: v.timeRangeStop, unit: 1d), d: 6d))\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n     |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n     |> keep(columns:cols)\r\n\r\nfinal\r\n  |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> window(every: 10m)\r\n  |> map(fn: (r) => ({r with _value: r._value / 6.0}))\r\n  |> mean()\r\n  |> duplicate(column: \"_start\", as: \"_time\")\r\n  //|> window(every: 1d)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n",
+          "query": "import \"timezone\"\r\nimport \"date\"\r\noption location = timezone.fixed(offset: ${TimeZone})\r\n\r\ndata = from(bucket: \"${InfluxBucket}\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r.ups_name == \"${UpsName}\" and r._field == \"load_percent\")\r\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n  |> filter(fn: (r) => r._time >= date.sub(from: date.truncate(t: v.timeRangeStop, unit: 1d), d: 6d))\r\n\r\ncols = [\"_field\", \"_time\", \"_value\"]\r\n\r\nfinal = data\r\n     |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:\"Day\"}))\r\n     |> keep(columns:cols)\r\n\r\nfinal\r\n  //|> aggregateWindow(every: 1d, fn: sum, createEmpty: false)\r\n  |> window(every: 10m)\r\n  |> map(fn: (r) => ({r with _value: r._value / 6.0}))\r\n  |> mean()\r\n  |> duplicate(column: \"_start\", as: \"_time\")\r\n  |> window(every: 1d)\r\n  |> map(fn: (r) => ({r with _value: ${UpsPower} * r._value * 0.01}))\r\n",
           "refId": "A"
         }
       ],
@@ -829,7 +835,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -891,7 +897,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -948,7 +954,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "dashed"
             }
           },
           "mappings": [],
@@ -961,7 +967,7 @@
               },
               {
                 "color": "#EAB839",
-                "value": 300
+                "value": 350
               },
               {
                 "color": "red",
@@ -1089,7 +1095,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -1159,7 +1165,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -1214,7 +1220,7 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "dashed"
             }
           },
           "decimals": 1,
@@ -1225,6 +1231,14 @@
               {
                 "color": "green",
                 "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 220
+              },
+              {
+                "color": "#EAB839",
+                "value": 240
               }
             ]
           },
@@ -1350,7 +1364,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -1412,7 +1426,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "9.5.0-105692pre",
+      "pluginVersion": "10.0.0-114140pre",
       "targets": [
         {
           "datasource": {
@@ -1590,7 +1604,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "red"
+                "color": "red",
+                "value": null
               },
               {
                 "color": "#EAB839",
@@ -1654,7 +1669,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "5m",
+  "refresh": "30s",
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
@@ -1663,9 +1678,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "3h",
-          "value": "3h"
+          "selected": true,
+          "text": "2h",
+          "value": "2h"
         },
         "hide": 0,
         "includeAll": false,
@@ -1719,12 +1734,12 @@
             "value": "4h"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "3h",
             "value": "3h"
           },
           {
-            "selected": false,
+            "selected": true,
             "text": "2h",
             "value": "2h"
           },
@@ -1806,7 +1821,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "0.11",
           "value": "0.11"
         },
@@ -1905,7 +1920,7 @@
       },
       {
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "telegraf",
           "value": "telegraf"
         },
@@ -1989,9 +2004,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "670.0",
-          "value": "670.0"
+          "selected": true,
+          "text": "800.0",
+          "value": "800.0"
         },
         "description": "Make sure you have foat value",
         "hide": 0,
@@ -2001,7 +2016,7 @@
         "name": "UpsPower",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "800.0",
             "value": "800.0"
           },
@@ -2024,12 +2039,10 @@
   },
   "timepicker": {
     "refresh_intervals": [
+      "30s",
       "1m",
       "5m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
+      "30m"
     ],
     "time_options": [
       "5m",
@@ -2046,6 +2059,6 @@
   "timezone": "browser",
   "title": "APC dash pro",
   "uid": "FBsdas",
-  "version": 104,
+  "version": 3,
   "weekStart": ""
 }
